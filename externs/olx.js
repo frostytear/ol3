@@ -5254,6 +5254,7 @@ olx.source.StaticVectorOptions.prototype.urls;
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     urls: (Array.<string>|undefined),
+ *     wrapX: (boolean|undefined),
  *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
  *                          ol.TileState, string, ?string,
  *                          ol.TileLoadFunctionType)|undefined)}}
@@ -5413,6 +5414,13 @@ olx.source.WMTSOptions.prototype.tileLoadFunction;
  * @api
  */
 olx.source.WMTSOptions.prototype.urls;
+
+/**
+* Whether to wrap the world horizontally. Default is `true`.
+* @type {boolean|undefined}
+* @api
+*/
+olx.source.WMTSOptions.prototype.wrapX;
 
 
 /**
