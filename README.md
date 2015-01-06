@@ -1,4 +1,6 @@
-# OpenLayers 3
+# OpenLayers 3 - Fork
+
+This fork contains changes to OpenLayers 3 used by [Worldview](https://github.com/nasa-gibs/worldview). These changes are either too specific to the application or time constraints prevent sending in pull requests upstream.
 
 [![Travis CI Status](https://secure.travis-ci.org/openlayers/ol3.png)](http://travis-ci.org/#!/openlayers/ol3)
 
