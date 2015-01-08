@@ -5,4 +5,4 @@ before_install:
 before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
 
-script: "./build.py ci"
+script: "./build.py test"
