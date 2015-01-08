@@ -28,13 +28,13 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
   /**
    * Image URI
    *
-   * @private
+   * @protected
    * @type {string}
    */
   this.src_ = src;
 
   /**
-   * @private
+   * @protected
    * @type {Image}
    */
   this.image_ = new Image();

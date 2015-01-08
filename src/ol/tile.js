@@ -9,6 +9,7 @@ goog.require('ol.TileCoord');
 
 /**
  * @enum {number}
+ * @api
  */
 ol.TileState = {
   IDLE: 0,
@@ -28,6 +29,7 @@ ol.TileState = {
  * @extends {goog.events.EventTarget}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.TileState} state State.
+ * @api
  */
 ol.Tile = function(tileCoord, state) {
 
@@ -39,7 +41,7 @@ ol.Tile = function(tileCoord, state) {
   this.tileCoord = tileCoord;
 
   /**
-   * @protected
+   * @api
    * @type {ol.TileState}
    */
   this.state = state;
@@ -49,7 +51,7 @@ goog.inherits(ol.Tile, goog.events.EventTarget);
 
 
 /**
- * @protected
+ * @api
  */
 ol.Tile.prototype.changed = function() {
   this.dispatchEvent(goog.events.EventType.CHANGE);
