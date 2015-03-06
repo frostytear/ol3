@@ -310,7 +310,10 @@ olx.MapOptions.prototype.view;
  *     position: (ol.Coordinate|undefined),
  *     positioning: (ol.OverlayPositioning|string|undefined),
  *     stopEvent: (boolean|undefined),
- *     insertFirst: (boolean|undefined)}}
+ *     insertFirst: (boolean|undefined),
+ *     autoPan: (boolean|undefined),
+ *     autoPanAnimation: (olx.animation.PanOptions|undefined),
+ *     autoPanMargin: (number|undefined)}}
  * @api stable
  */
 olx.OverlayOptions;
@@ -374,6 +377,35 @@ olx.OverlayOptions.prototype.stopEvent;
  * @api stable
  */
 olx.OverlayOptions.prototype.insertFirst;
+
+
+/**
+ * If set to `true` the map is panned when calling `setPosition`, so that the
+ * overlay is entirely visible in the current viewport.
+ * The default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPan;
+
+
+/**
+ * The options used to create a `ol.animation.pan` animation. This animation
+ * is only used when `autoPan` is enabled. By default the default options for
+ * `ol.animation.pan` are used. If set to `null` the panning is not animated.
+ * @type {olx.animation.PanOptions|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanAnimation;
+
+
+/**
+ * The margin (in pixels) between the overlay and the borders of the map when
+ * autopanning. The default is `20`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanMargin;
 
 
 /**
@@ -806,8 +838,8 @@ olx.control;
  *     collapsible: (boolean|undefined),
  *     collapsed: (boolean|undefined),
  *     tipLabel: (string|undefined),
- *     label: (string|undefined),
- *     collapseLabel: (string|undefined),
+ *     label: (string|Node|undefined),
+ *     collapseLabel: (string|Node|undefined),
  *     render: (function(ol.MapEvent)|undefined),
  *     target: (Element|undefined)}}
  * @api
@@ -859,15 +891,17 @@ olx.control.AttributionOptions.prototype.tipLabel;
 
 
 /**
- * Text label to use for the collapsed attributions button. Default is `i`
- * @type {string|undefined}
+ * Text label to use for the collapsed attributions button. Default is `i`.
+ * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @type {string|Node|undefined}
  * @api
  */
 olx.control.AttributionOptions.prototype.label;
 
 /**
- * Text label to use for the expanded attributions button. Default is `»`
- * @type {string|undefined}
+ * Text label to use for the expanded attributions button. Default is `»`.
+ * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @type {string|Node|undefined}
  * @api
  */
 olx.control.AttributionOptions.prototype.collapseLabel;
@@ -980,6 +1014,8 @@ olx.control.DefaultsOptions.prototype.zoomOptions;
 
 /**
  * @typedef {{className: (string|undefined),
+ *     label: (string|Node|undefined),
+ *     labelActive: (string|Node|undefined),
  *     tipLabel: (string|undefined),
  *     keys: (boolean|undefined),
  *     target: (Element|undefined)}}
@@ -994,6 +1030,25 @@ olx.control.FullScreenOptions;
  * @api
  */
 olx.control.FullScreenOptions.prototype.className;
+
+
+/**
+ * Text label to use for the button. Default is `\u2194` (an arrow).
+ * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @type {string|Node|undefined}
+ * @api
+ */
+olx.control.FullScreenOptions.prototype.label;
+
+
+/**
+ * Text label to use for the button when full-screen is active.
+ * Default is `\u00d7` (a cross).
+ * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @type {string|Node|undefined}
+ * @api
+ */
+olx.control.FullScreenOptions.prototype.labelActive;
 
 
 /**
@@ -1083,9 +1138,9 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
 
 /**
  * @typedef {{collapsed: (boolean|undefined),
- *     collapseLabel: (string|undefined),
+ *     collapseLabel: (string|Node|undefined),
  *     collapsible: (boolean|undefined),
- *     label: (string|undefined),
+ *     label: (string|Node|undefined),
  *     layers: (Array.<ol.layer.Layer>|ol.Collection|undefined),
  *     render: (function(ol.MapEvent)|undefined),
  *     target: (Element|undefined),
@@ -1105,8 +1160,9 @@ olx.control.OverviewMapOptions.prototype.collapsed;
 
 
 /**
- * Text label to use for the expanded overviewmap button. Default is `«`
- * @type {string|undefined}
+ * Text label to use for the expanded overviewmap button. Default is `«`.
+ * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @type {string|Node|undefined}
  * @api
  */
 olx.control.OverviewMapOptions.prototype.collapseLabel;
@@ -1121,8 +1177,9 @@ olx.control.OverviewMapOptions.prototype.collapsible;
 
 
 /**
- * Text label to use for the collapsed overviewmap button. Default is `»`
- * @type {string|undefined}
+ * Text label to use for the collapsed overviewmap button. Default is `»`.
+ * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @type {string|Node|undefined}
  * @api
  */
 olx.control.OverviewMapOptions.prototype.label;
@@ -1218,7 +1275,7 @@ olx.control.ScaleLineOptions.prototype.units;
 /**
  * @typedef {{duration: (number|undefined),
  *     className: (string|undefined),
- *     label: (string|undefined),
+ *     label: (string|Node|undefined),
  *     tipLabel: (string|undefined),
  *     target: (Element|undefined),
  *     render: (function(ol.MapEvent)|undefined),
@@ -1237,8 +1294,9 @@ olx.control.RotateOptions.prototype.className;
 
 
 /**
- * Text label to use for the rotate button. Default is `⇧`
- * @type {string|undefined}
+ * Text label to use for the rotate button. Default is `⇧`.
+ * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @type {string|Node|undefined}
  * @api stable
  */
 olx.control.RotateOptions.prototype.label;
@@ -1288,8 +1346,8 @@ olx.control.RotateOptions.prototype.target;
 /**
  * @typedef {{duration: (number|undefined),
  *     className: (string|undefined),
- *     zoomInLabel: (string|undefined),
- *     zoomOutLabel: (string|undefined),
+ *     zoomInLabel: (string|Node|undefined),
+ *     zoomOutLabel: (string|Node|undefined),
  *     zoomInTipLabel: (string|undefined),
  *     zoomOutTipLabel: (string|undefined),
  *     delta: (number|undefined),
@@ -1316,16 +1374,18 @@ olx.control.ZoomOptions.prototype.className;
 
 
 /**
- * Text label to use for the zoom-in button. Default is `+`
- * @type {string|undefined}
+ * Text label to use for the zoom-in button. Default is `+`.
+ * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @type {string|Node|undefined}
  * @api stable
  */
 olx.control.ZoomOptions.prototype.zoomInLabel;
 
 
 /**
- * Text label to use for the zoom-out button. Default is `-`
- * @type {string|undefined}
+ * Text label to use for the zoom-out button. Default is `-`.
+ * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @type {string|Node|undefined}
  * @api stable
  */
 olx.control.ZoomOptions.prototype.zoomOutLabel;
@@ -1409,6 +1469,7 @@ olx.control.ZoomSliderOptions.prototype.render;
 /**
  * @typedef {{className: (string|undefined),
  *     target: (Element|undefined),
+ *     label: (string|Node|undefined),
  *     tipLabel: (string|undefined),
  *     extent: (ol.Extent|undefined)}}
  * @api stable
@@ -1430,6 +1491,15 @@ olx.control.ZoomToExtentOptions.prototype.className;
  * @api stable
  */
 olx.control.ZoomToExtentOptions.prototype.target;
+
+
+/**
+ * Text label to use for the button. Default is `E`.
+ * Instead of text, also a Node (e.g. a `span` element) can be used.
+ * @type {string|Node|undefined}
+ * @api stable
+ */
+olx.control.ZoomToExtentOptions.prototype.label;
 
 
 /**
@@ -2481,7 +2551,8 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     layers: (Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
- *     toggleCondition: (ol.events.ConditionType|undefined)}}
+ *     toggleCondition: (ol.events.ConditionType|undefined),
+ *     multi: (boolean|undefined)}}
  * @api
  */
 olx.interaction.SelectOptions;
@@ -2557,6 +2628,15 @@ olx.interaction.SelectOptions.prototype.removeCondition;
  * @api
  */
 olx.interaction.SelectOptions.prototype.toggleCondition;
+
+/**
+ * A boolean that determines if the default behaviour should select only
+ * single features or all (overlapping) features at the clicked map
+ * position. Default is false i.e single select
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.SelectOptions.prototype.multi;
 
 
 /**
@@ -3220,6 +3300,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     saturation: (number|undefined),
  *     source: (ol.source.Vector|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     updateWhileAnimating: (boolean|undefined),
  *     visible: (boolean|undefined)}}
  * @api
  */
@@ -3329,6 +3410,17 @@ olx.layer.VectorOptions.prototype.style;
 
 
 /**
+ * When set to `true`, feature batches will be recreated during animations.
+ * This means that no vectors will be shown clipped, but the setting will have a
+ * performance impact for large amounts of vector data. When set to `false`,
+ * batches will be recreated when no animation is active.  Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.layer.VectorOptions.prototype.updateWhileAnimating;
+
+
+/**
  * Visibility. Default is `true` (visible).
  * @type {boolean|undefined}
  * @api stable
@@ -3381,7 +3473,8 @@ olx.source;
  *     key: string,
  *     imagerySet: string,
  *     maxZoom: (number|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
+ *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.BingMapsOptions;
@@ -3426,6 +3519,15 @@ olx.source.BingMapsOptions.prototype.maxZoom;
  * @api
  */
 olx.source.BingMapsOptions.prototype.tileLoadFunction;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.BingMapsOptions.prototype.wrapX;
+
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
@@ -3542,7 +3644,7 @@ olx.source.FormatVectorOptions.prototype.projection;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     defaultProjection: ol.proj.ProjectionLike,
  *     logo: (string|olx.LogoOptions|undefined),
- *     object: (GeoJSONObject|undefined),
+ *     object: (GeoJSONFeature|GeoJSONFeatureCollection|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     text: (string|undefined),
  *     url: (string|undefined),
@@ -3577,8 +3679,8 @@ olx.source.GeoJSONOptions.prototype.logo;
 
 
 /**
- * Object.
- * @type {GeoJSONObject|undefined}
+ * GeoJSON feature or feature collection.
+ * @type {GeoJSONFeature|GeoJSONFeatureCollection|undefined}
  * @api
  */
 olx.source.GeoJSONOptions.prototype.object;
@@ -4241,7 +4343,8 @@ olx.source.KMLOptions.prototype.urls;
 
 /**
  * @typedef {{layer: string,
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined)}}
+ *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     url: (string|undefined)}}
  * @api
  */
 olx.source.MapQuestOptions;
@@ -4261,6 +4364,14 @@ olx.source.MapQuestOptions.prototype.layer;
  * @api
  */
 olx.source.MapQuestOptions.prototype.tileLoadFunction;
+
+
+/**
+ * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.MapQuestOptions.prototype.url;
 
 
 /**
@@ -4292,7 +4403,8 @@ olx.source.TileDebugOptions.prototype.tileGrid;
  *     crossOrigin: (null|string|undefined),
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: (string|undefined)}}
+ *     url: (string|undefined),
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.OSMOptions;
@@ -4343,6 +4455,14 @@ olx.source.OSMOptions.prototype.tileLoadFunction;
  * @api stable
  */
 olx.source.OSMOptions.prototype.url;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.OSMOptions.prototype.wrapX;
 
 
 /**
@@ -4890,15 +5010,113 @@ olx.source.ServerVectorOptions.prototype.logo;
  */
 olx.source.ServerVectorOptions.prototype.projection;
 
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     params: (Object.<string, *>|undefined),
+ *     logo: (string|olx.LogoOptions|undefined),
+ *     tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *     projection: ol.proj.ProjectionLike,
+ *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
+ *     url: (string|undefined),
+ *     urls: (Array.<string>|undefined)}}
+ * @api
+ */
+olx.source.TileArcGISRestOptions;
 
 /**
- * @typedef {{crossOrigin: (null|string|undefined),
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.attributions;
+
+
+/**
+ * ArcGIS Rest parameters. This field is optional. Service defaults will be
+ * used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is `IMAGE` by
+ * default. `TRANSPARENT` is `true` by default.  `BBOX, `SIZE`, `BBOXSR`, 
+ * and `IMAGESR` will be set dynamically. Set `LAYERS` to
+ * override the default service layer visibility. See 
+ * {@link http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#/Export_Map/02r3000000v7000000/}
+ * for further reference.
+ * @type {Object.<string,*>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.params;
+
+
+/**
+ * Logo.
+ * @type {string|olx.LogoOptions|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.logo;
+
+
+/**
+ * Tile grid. Base this on the resolutions, tilesize and extent supported by the
+ * server.
+ * If this is not defined, a default grid will be used: if there is a projection
+ * extent, the grid will be based on that; if not, a grid based on a global
+ * extent with origin at 0,0 will be used.
+ * @type {ol.tilegrid.TileGrid|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.tileGrid;
+
+/**
+ * Projection.
+ * @type {ol.proj.ProjectionLike}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.projection;
+
+
+/**
+ * Optional function to load a tile given a URL.
+ * @type {ol.TileLoadFunctionType|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.tileLoadFunction;
+
+
+/**
+ * ArcGIS Rest service URL for a Map Service or Image Service. The
+ * url should include /MapServer or /ImageServer.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.url;
+
+
+/**
+ * ArcGIS Rest service urls. Use this instead of `url` when the ArcGIS Service supports multiple
+ * urls for export requests.
+ * @type {Array.<string>|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.urls;
+
+
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     crossOrigin: (null|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string,
  *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.TileJSONOptions;
+
+
+/**
+ * Optional attributions for the source.  If provided, these will be used
+ * instead of any attribution data advertised by the server.  If not provided,
+ * any attributions advertised by the server will be used.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api stable
+ */
+olx.source.TileJSONOptions.prototype.attributions;
 
 
 /**
@@ -5709,6 +5927,7 @@ olx.style.FillOptions.prototype.color;
  *     img: (Image|undefined),
  *     offset: (Array.<number>|undefined),
  *     offsetOrigin: (ol.style.IconOrigin|undefined),
+ *     opacity: (number|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
  *     rotateWithView: (boolean|undefined),
@@ -5796,6 +6015,14 @@ olx.style.IconOptions.prototype.offset;
  * @api
  */
 olx.style.IconOptions.prototype.offsetOrigin;
+
+
+/**
+ * Opacity of the icon. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.IconOptions.prototype.opacity;
 
 
 /**
@@ -6498,6 +6725,13 @@ olx.ViewState;
  * @api
  */
 olx.ViewState.prototype.center;
+
+
+/**
+ * @type {ol.proj.Projection}
+ * @api
+ */
+olx.ViewState.prototype.projection;
 
 
 /**
