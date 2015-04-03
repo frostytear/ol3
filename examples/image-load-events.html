@@ -8,18 +8,24 @@
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="../resources/layout.css" type="text/css">
     <link rel="stylesheet" href="../resources/bootstrap/css/bootstrap-responsive.min.css" type="text/css">
+    <title>Image load events example</title>
     <style>
-      .map:-moz-full-screen {
-        height: 100%;
+      .map {
+        background: #E0ECED;
       }
-      .map:-webkit-full-screen {
-        height: 100%;
+      .wrapper {
+        position: relative;
       }
-      .map:fullscreen {
-        height: 100%;
+      #progress {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        background: rgba(0, 60, 136, 0.4);
+        width: 0;
+        transition: width 250ms;
       }
     </style>
-    <title>Full screen drag rotate and zoom example</title>
   </head>
   <body>
 
@@ -34,22 +40,31 @@
     <div class="container-fluid">
 
       <div class="row-fluid">
-        <div class="span12">
+        <div class="span12 wrapper">
           <div id="map" class="map"></div>
+          <div id="progress"></div>
         </div>
       </div>
 
       <div class="row-fluid">
 
         <div class="span12">
-          <h4 id="title">Full screen drag rotate and zoom example</h4>
-          <p id="shortdesc">Example of drag rotate and zoom control with full screen effect.</p>
+          <h4 id="title">Image load events example</h4>
+          <p id="shortdesc">Example using image load events.</p>
           <div id="docs">
-            <p>Hold down <code>Shift</code> + drag to rotate and zoom.  Click the button in the top right corner to go full screen.  Then do the <code>Shift</code> + drag thing again.</p>
-            <p>If there is no button on the map, your browser does not support the <a href="http://caniuse.com/#feat=fullscreen">Full Screen API</a>.</p>
-            <p>See the <a href="full-screen-drag-rotate-and-zoom.js" target="_blank">full-screen-drag-rotate-and-zoom.js source</a> to see how this is done.</p>
+            <p>
+              Image sources fire events related to image loading.  You can
+              listen for <code>imageloadstart</code>, <code>imageloadend</code>,
+              and <code>imageloaderror</code> type events to monitor image loading
+              progress.  This example registers listeners for these events and
+              renders an image loading progress bar at the bottom of the map.
+            </p>
+            <p>
+              See the <a href="image-load-events.js" target="_blank">image-load-events.js source</a>
+              for more detail on how this is done.
+            </p>
           </div>
-          <div id="tags">full-screen, drag, rotate, zoom, bing, bing-maps</div>
+          <div id="tags">image, events, loading</div>
         </div>
 
       </div>
@@ -58,7 +73,7 @@
 
     <script src="../resources/jquery.min.js" type="text/javascript"></script>
     <script src="../resources/example-behaviour.js" type="text/javascript"></script>
-    <script src="loader.js?id=full-screen-drag-rotate-and-zoom" type="text/javascript"></script>
+    <script src="loader.js?id=image-load-events" type="text/javascript"></script>
 
   </body>
 </html>

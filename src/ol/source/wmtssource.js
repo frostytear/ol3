@@ -3,7 +3,6 @@ goog.provide('ol.source.WMTSRequestEncoding');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
@@ -41,7 +40,7 @@ ol.source.WMTS = function(options) {
 
   // TODO: add support for TileMatrixLimits
 
-  var wrapX = goog.isDef(options.wrapX) ? options.wrapX : true;
+  //var wrapX = goog.isDef(options.wrapX) ? options.wrapX : true;
   /**
    * @private
    * @type {string}
@@ -171,7 +170,6 @@ ol.source.WMTS = function(options) {
   }
 
   var tmpExtent = ol.extent.createEmpty();
-  var tmpTileCoord = [0, 0, 0];
   tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
       /**
        * @param {ol.TileCoord} tileCoord Tile coordinate.
@@ -189,6 +187,8 @@ ol.source.WMTS = function(options) {
         var tileExtent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
         var extent = projection.getExtent();
 
+/*
+<<<<<<< HEAD
         if (wrapX && !goog.isNull(extent) && projection.isGlobal()) {
           var numCols = Math.ceil(
               ol.extent.getWidth(extent) /
@@ -199,6 +199,9 @@ ol.source.WMTS = function(options) {
           tmpTileCoord[2] = tileCoord[2];
           tileExtent = tileGrid.getTileCoordExtent(tmpTileCoord, tmpExtent);
         }
+=======
+>>>>>>> v3.4.0
+*/
         if (!ol.extent.intersects(tileExtent, extent) ||
             ol.extent.touches(tileExtent, extent)) {
           return null;
@@ -216,7 +219,8 @@ ol.source.WMTS = function(options) {
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
-    tileUrlFunction: tileUrlFunction
+    tileUrlFunction: tileUrlFunction,
+    wrapX: goog.isDef(options.wrapX) ? options.wrapX : false
   });
 
 };
@@ -349,7 +353,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   goog.asserts.assert(!goog.isNull(l));
 
   goog.asserts.assert(l['TileMatrixSetLink'].length > 0);
-  var idx, matrixSet;
+  var idx, matrixSet, wrapX;
   if (l['TileMatrixSetLink'].length > 1) {
     idx = goog.array.findIndex(l['TileMatrixSetLink'],
         function(elt, index, array) {
@@ -372,6 +376,13 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
 
   goog.asserts.assert(!goog.isNull(matrixSet));
+
+  var wgs84BoundingBox = l['WGS84BoundingBox'];
+  if (goog.isDef(wgs84BoundingBox)) {
+    var wgs84ProjectionExtent = ol.proj.get('EPSG:4326').getExtent();
+    wrapX = (wgs84BoundingBox[0] == wgs84ProjectionExtent[0] &&
+        wgs84BoundingBox[2] == wgs84ProjectionExtent[2]);
+  }
 
   var format = /** @type {string} */ (l['Format'][0]);
   if (goog.isDef(config['format'])) {
@@ -464,7 +475,8 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     requestEncoding: requestEncoding,
     tileGrid: tileGrid,
     style: style,
-    dimensions: dimensions
+    dimensions: dimensions,
+    wrapX: wrapX
   };
 
   /* jshint +W069 */
